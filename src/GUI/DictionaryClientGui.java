@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.List;
 
@@ -167,7 +168,7 @@ public class DictionaryClientGui {
 
         addCard.add(meaningsPanel);
 
-        JTextArea statusArea = new JTextArea(4, 20);
+        JTextArea statusArea = new JTextArea(2, 20);
         statusArea.setEditable(false);
         JScrollPane statusScrollPane = new JScrollPane(statusArea);
         statusScrollPane.setBorder(BorderFactory.createTitledBorder("Status"));
@@ -247,10 +248,119 @@ public class DictionaryClientGui {
     }
 
     private JPanel createUpdateCard() {
-        JPanel card = new JPanel(new BorderLayout());
-        // Add components specific to the Update functionality
-        return card;
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel updateCard = new JPanel();
+        updateCard.setLayout(new BoxLayout(updateCard, BoxLayout.Y_AXIS));
+        updateCard.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JPanel wordPanel = new JPanel(new BorderLayout());
+        wordPanel.setBorder(BorderFactory.createTitledBorder("Word to Update"));
+        wordPanel.setMaximumSize(new Dimension(600, 60));
+
+        Box wordInputBox = Box.createHorizontalBox();
+        JTextField wordInput = new JTextField(20);
+        wordInputBox.add(wordInput);
+        wordPanel.add(wordInputBox, BorderLayout.CENTER);
+
+        JButton fetchDefinitionButton = new JButton("Fetch Definition");
+        wordPanel.add(fetchDefinitionButton, BorderLayout.EAST);
+
+        updateCard.add(wordPanel);
+        updateCard.add(Box.createVerticalStrut(10));
+
+        JPanel meaningsPanel = new JPanel(new BorderLayout());
+        meaningsPanel.setBorder(BorderFactory.createTitledBorder("Edit Meanings"));
+
+        JPanel meaningsListPanel = new JPanel();
+        meaningsListPanel.setLayout(new BoxLayout(meaningsListPanel, BoxLayout.Y_AXIS));
+        JScrollPane meaningsScrollPane = new JScrollPane(meaningsListPanel);
+
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton addMeaningButton = new JButton("+ Add Meaning");
+        JButton submitButton = new JButton("Submit");
+        bottomPanel.add(addMeaningButton);
+        bottomPanel.add(submitButton);
+
+        meaningsPanel.add(meaningsScrollPane, BorderLayout.CENTER);
+        meaningsPanel.add(bottomPanel, BorderLayout.SOUTH);
+
+        updateCard.add(meaningsPanel);
+
+        JTextArea statusArea = new JTextArea(2, 20);
+        statusArea.setEditable(false);
+        JScrollPane statusScrollPane = new JScrollPane(statusArea);
+        statusScrollPane.setBorder(BorderFactory.createTitledBorder("Status"));
+        updateCard.add(statusScrollPane);
+
+        List<JTextField> meaningFields = new ArrayList<>();
+
+        fetchDefinitionButton.addActionListener(e -> {
+            String word = wordInput.getText().trim();
+            // TODO: Fetch the current definition(s) for the word
+            // Simulate fetching and populating the meanings
+            meaningsListPanel.removeAll();
+            meaningFields.clear();
+            // Example: Assuming fetchDefinitions returns a List<String>
+            List<String> definitions = fetchDefinitions(word);
+            for (String def : definitions) {
+                addMeaningField(meaningsListPanel, meaningFields, def);
+            }
+        });
+
+        // Add meaning button action
+        addMeaningButton.addActionListener(e -> {
+            addMeaningField(meaningsListPanel, meaningFields, "");  // Add empty field for new meaning
+        });
+
+        // Submit button action
+        submitButton.addActionListener(e -> {
+            String word = wordInput.getText().trim();
+//            List<String> meanings = meaningFields.stream()
+//                    .map(JTextField::getText)
+//                    .filter(text -> !text.trim().isEmpty())
+//                    .collect(Collectors.toList());
+            // TODO: Submit updated meanings to the server
+        });
+
+
+        return updateCard;
     }
+
+    private void addMeaningField(JPanel meaningsListPanel, List<JTextField> meaningFields, String text) {
+        JTextField newMeaningField = new JTextField(text);
+        JButton removeMeaningButton = new JButton("-");
+
+        Dimension buttonDimension = removeMeaningButton.getPreferredSize();
+        newMeaningField.setPreferredSize(new Dimension(newMeaningField.getPreferredSize().width, buttonDimension.height));
+        newMeaningField.setMaximumSize(new Dimension(Integer.MAX_VALUE, buttonDimension.height));
+
+        removeMeaningButton.addActionListener(e -> {
+            meaningsListPanel.remove(newMeaningField.getParent());
+            meaningFields.remove(newMeaningField);
+            meaningsListPanel.revalidate();
+            meaningsListPanel.repaint();
+        });
+
+        JPanel meaningFieldPanel = new JPanel();
+        meaningFieldPanel.setLayout(new BoxLayout(meaningFieldPanel, BoxLayout.X_AXIS));
+        meaningFieldPanel.add(newMeaningField);
+        meaningFieldPanel.add(removeMeaningButton);
+        meaningFields.add(newMeaningField);
+
+        meaningsListPanel.add(meaningFieldPanel);
+        meaningsListPanel.revalidate();
+        meaningsListPanel.repaint();
+
+    }
+
+    private List<String> fetchDefinitions(String word) {
+        // TODO: Implement fetching logic from server or data source
+        // This is just a placeholder
+        return Arrays.asList("Definition 1", "Definition 2");
+    }
+
 
     private JPanel createWelcomeCard() {
         JPanel welcomePanel = new JPanel(new BorderLayout());

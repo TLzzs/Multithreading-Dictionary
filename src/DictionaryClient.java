@@ -46,12 +46,13 @@ public class DictionaryClient {
             throw new RuntimeException(e);
         } catch (IOException e) {
             logger.severe("Error: Unable to establish connection to " + serverAddress + ":" + port + ". " + e.getMessage());
+            handleReconnection();
         } catch (IllegalArgumentException e) {
             logger.severe("Error: Port parameter is outside the specified range of valid port values.");
             throw new RuntimeException(e);
         }
 
-        handleReconnection();
+
     }
 
     private void handleReconnection() {
