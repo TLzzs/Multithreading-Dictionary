@@ -1,0 +1,5 @@
+apple: a fruit; a technology company;
+banana: a yellow fruit; something that is curved or bent;
+cat: a small domestic animal; something secretive or mysterious;
+dog: a domestic animal known for loyalty;a derogatory term for someone unattractive or boring;
+elephanta large mammal with a trunk;something very large or significant;
