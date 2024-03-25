@@ -49,12 +49,24 @@ public class RequestHandler implements Runnable {
         String response = switch (action.toUpperCase()) {
             case QUERY -> handleQuery(parts[1]);
             case ADD -> handleAdd(parts[1], parts[2]);
+            case REMOVE -> handleRemove(parts[1]);
             default -> "Unknown action." + END_OF_LINE;
         };
 
         writer.write(response);
-        writer.write("FINISH FROM SERVER" + END_OF_LINE);
+        writer.write("FINISH FROM SERVER");
+        writer.newLine();
         writer.flush();
+    }
+
+    private String handleRemove(String word) {
+        logger.info("received word: "+ word);
+        if (dictionaryServer.isInDictionary(word)) {
+            dictionaryServer.removeWordAndDefinition(word);
+            return "Successfully remove word " + word +  " from Dictionary..." + END_OF_LINE;
+        } else {
+            return "This word was not existing in dictionary , please retry..." + END_OF_LINE;
+        }
     }
 
     private String handleAdd(String word, String definitions) {
@@ -83,7 +95,7 @@ public class RequestHandler implements Runnable {
             }
             return response.toString();
         } else {
-            return "Word not found.\n";
+            return "Word not found." + END_OF_LINE;
         }
     }
 }

@@ -48,7 +48,7 @@ public class ClientUtil {
             }
             meaningStr.replace(meaningStr.length()-1, meaningStr.length(),"");
 
-            writer.write(ADD + COLON + word + COLON + meaningStr);
+            writer.write(ADD + COLON + word.toLowerCase() + COLON + meaningStr);
             writer.newLine();
             writer.flush();
 
@@ -66,6 +66,22 @@ public class ClientUtil {
     }
 
     public String removeFromServer(String word) {
-        return "";
+        try {
+            logger.info("requesting remove a word from dictionary");
+            writer.write(REMOVE + COLON + word.toLowerCase());
+            writer.newLine();
+            writer.flush();
+
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null && !line.isEmpty() && !line.equals(FINISH_FROM_SERVER)) {
+                logger.info(line);
+                response.append(line).append(END_OF_LINE);
+            }
+            return response.toString();
+        } catch (IOException e) {
+            logger.severe("Error communicating with the server: " + e.getMessage());
+            return "An Unexpected Error Occurs , please restart the application";
+        }
     }
 }

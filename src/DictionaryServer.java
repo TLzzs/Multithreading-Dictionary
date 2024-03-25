@@ -106,4 +106,8 @@ public class DictionaryServer {
     public void addWordAndDefinition(String word , ArrayList<String> definitions) {
         dictionary.put(word, definitions);
     }
+
+    public void removeWordAndDefinition(String word) {
+        dictionary.remove(word);
+    }
 }

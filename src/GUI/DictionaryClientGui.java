@@ -232,7 +232,7 @@ public class DictionaryClientGui {
             String word = wordInput.getText().trim();
             if (!word.isEmpty()) {
                 String status = clientUtil.removeFromServer(word);
-//                SwingUtilities.invokeLater(() -> resultArea.setText("Results for \"" + word + "\":\n" + definition));
+                resultArea.setText(status);
             } else {
                 resultArea.setText("Please enter a word to query.");
             }
