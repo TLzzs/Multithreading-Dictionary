@@ -6,9 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.logging.Logger;
 
 public class DictionaryServer {
@@ -28,8 +26,9 @@ public class DictionaryServer {
     }
 
     private void startServer() throws IOException {
-        int numberOfThreads = 5;
-        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
+        int numberOfThreads = 50;
+        ExecutorService executorService = new ThreadPoolExecutor(0, numberOfThreads,
+                60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             logger.info("Server stated and listening on port: " + port);

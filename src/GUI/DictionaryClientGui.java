@@ -61,7 +61,6 @@ public class DictionaryClientGui {
         setupCardSwitching(queryButton, addButton, removeButton, updateButton);
 
         frame.setVisible(true);
-
     }
 
     private JPanel createQueryCard() {
@@ -93,8 +92,10 @@ public class DictionaryClientGui {
         queryButton.addActionListener(e -> {
             String word = wordInput.getText().trim();
             if (!word.isEmpty()) {
-                String definition = clientUtil.queryServer(word);
-                SwingUtilities.invokeLater(() -> resultArea.setText("Results for \"" + word + "\":\n" + definition));
+                new Thread( ()->{
+                    String definition = clientUtil.queryServer(word);
+                    SwingUtilities.invokeLater(() -> resultArea.setText("Results for \"" + word + "\":\n" + definition));
+                }).start();
             } else {
                 resultArea.setText("Please enter a word to query.");
             }
@@ -191,8 +192,10 @@ public class DictionaryClientGui {
             logger.info("receive meaning: " + meanings);
 
             if (!word.isEmpty() && !meanings.isEmpty()) {
-                String response = clientUtil.sendAddToServer(word, meanings);
-                statusArea.setText(response);
+                new Thread(() -> {
+                    String response = clientUtil.sendAddToServer(word, meanings);
+                    statusArea.setText(response);
+                }).start();
             } else {
                 statusArea.setText("Please enter a word and at least one meaning before submitting.");
             }
@@ -231,8 +234,10 @@ public class DictionaryClientGui {
         queryButton.addActionListener(e -> {
             String word = wordInput.getText().trim();
             if (!word.isEmpty()) {
-                String status = clientUtil.removeFromServer(word);
-                resultArea.setText(status);
+                new Thread (()-> {
+                    String status = clientUtil.removeFromServer(word);
+                    resultArea.setText(status);
+                }).start();
             } else {
                 resultArea.setText("Please enter a word to query.");
             }

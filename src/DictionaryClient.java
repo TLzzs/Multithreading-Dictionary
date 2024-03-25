@@ -10,11 +10,14 @@ import java.util.logging.Logger;
 public class DictionaryClient {
     private final Logger logger;
     private Socket socket;
+    private final String serverAddress;
+    private final int port;
 
     public DictionaryClient(String serverAddress, int port, Logger logger) {
 
         this.logger = logger;
-
+        this.serverAddress = serverAddress;
+        this.port = port;
         connectToServer(serverAddress, port);
         createClientGui();
 
@@ -43,10 +46,31 @@ public class DictionaryClient {
             throw new RuntimeException(e);
         } catch (IOException e) {
             logger.severe("Error: Unable to establish connection to " + serverAddress + ":" + port + ". " + e.getMessage());
-            throw new RuntimeException(e);
         } catch (IllegalArgumentException e) {
             logger.severe("Error: Port parameter is outside the specified range of valid port values.");
             throw new RuntimeException(e);
+        }
+
+        handleReconnection();
+    }
+
+    private void handleReconnection() {
+        int attempt = 0;
+        while (!Thread.currentThread().isInterrupted()) {
+            try {
+                System.out.println("Attempting to reconnect to the server...");
+                Thread.sleep(Math.min(1000 * (1L << attempt), 30000));
+                attempt++;
+                socket = new Socket(serverAddress, port);
+                System.out.println("Reconnected to the server.");
+                break;
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                logger.severe("Reconnection attempt interrupted.");
+                return;
+            } catch (IOException e) {
+                logger.info("Reconnection attempt failed. Trying again...");
+            }
         }
     }
 
