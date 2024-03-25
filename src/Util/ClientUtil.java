@@ -1,10 +1,12 @@
-package GUI;
+package Util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
+
+import static Util.CommunicateConfig.*;
 
 public class ClientUtil {
     private final BufferedReader reader;
@@ -20,14 +22,14 @@ public class ClientUtil {
     public String queryServer(String word) {
         try {
             logger.info("start querying process towards server ");
-            writer.write("QUERY:" + word);
+            writer.write(CommunicateConfig.QUERY + COLON + word);
             writer.newLine();
             writer.flush();
 
             StringBuilder response = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null && !line.isEmpty() && !line.equals("FINISH FROM SERVER")) {
-                response.append(line).append("\n");
+                response.append(line).append(END_OF_LINE);
             }
             return response.toString();
         } catch (IOException e) {
@@ -46,20 +48,24 @@ public class ClientUtil {
             }
             meaningStr.replace(meaningStr.length()-1, meaningStr.length(),"");
 
-            writer.write("ADD:" + word + ":" + meaningStr);
+            writer.write(ADD + COLON + word + COLON + meaningStr);
             writer.newLine();
             writer.flush();
 
             StringBuilder response = new StringBuilder();
             String line;
-            while ((line = reader.readLine()) != null && !line.isEmpty() && !line.equals("FINISH FROM SERVER")) {
+            while ((line = reader.readLine()) != null && !line.isEmpty() && !line.equals(FINISH_FROM_SERVER)) {
                 logger.info(line);
-                response.append(line).append("\n");
+                response.append(line).append(END_OF_LINE);
             }
             return response.toString();
         } catch (IOException e) {
             logger.severe("Error communicating with the server: " + e.getMessage());
             return "An Unexpected Error Occurs , please restart the application";
         }
+    }
+
+    public String removeFromServer(String word) {
+        return "";
     }
 }

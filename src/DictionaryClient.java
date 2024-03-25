@@ -1,4 +1,4 @@
-import GUI.ClientUtil;
+import Util.ClientUtil;
 import GUI.DictionaryClientGui;
 
 import javax.swing.*;

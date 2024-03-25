@@ -5,6 +5,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import static Util.CommunicateConfig.*;
+
 public class RequestHandler implements Runnable {
     private final Socket clientSocket;
     private final DictionaryServer dictionaryServer;
@@ -42,16 +44,16 @@ public class RequestHandler implements Runnable {
     }
 
     private void processRequest(String request, BufferedWriter writer) throws IOException {
-        String[] parts = request.split(":", 3);
+        String[] parts = request.split(COLON, 3);
         String action = parts[0];
         String response = switch (action.toUpperCase()) {
-            case "QUERY" -> handleQuery(parts[1]);
-            case "ADD" -> handleAdd(parts[1], parts[2]);
-            default -> "Unknown action.\n";
+            case QUERY -> handleQuery(parts[1]);
+            case ADD -> handleAdd(parts[1], parts[2]);
+            default -> "Unknown action." + END_OF_LINE;
         };
 
         writer.write(response);
-        writer.write("FINISH FROM SERVER\n");
+        writer.write("FINISH FROM SERVER" + END_OF_LINE);
         writer.flush();
     }
 
@@ -61,9 +63,9 @@ public class RequestHandler implements Runnable {
         ArrayList<String> definitionList = Mapper.convertStringToArrayList(definitions);
         if (!dictionaryServer.isInDictionary(word)) {
             dictionaryServer.addWordAndDefinition(word, definitionList);
-            return "Successfully Added to Dictionary...\n";
+            return "Successfully Added to Dictionary..." + END_OF_LINE;
         } else {
-            return "This word was in dictionary , please update if required...\n";
+            return "This word was in dictionary , please update if required..." + END_OF_LINE;
         }
     }
 
@@ -74,7 +76,10 @@ public class RequestHandler implements Runnable {
         if (definitions != null) {
             StringBuilder response = new StringBuilder();
             for (int i = 0; i < definitions.size(); i++) {
-                response.append("Definition ").append(i + 1).append(": ").append(definitions.get(i)).append('\n');
+                response.append("Definition ")
+                        .append(i + 1)
+                        .append(": ")
+                        .append(definitions.get(i)).append(END_OF_LINE);
             }
             return response.toString();
         } else {

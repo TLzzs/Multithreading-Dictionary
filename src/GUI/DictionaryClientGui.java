@@ -1,5 +1,7 @@
 package GUI;
 
+import Util.ClientUtil;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -23,7 +25,7 @@ public class DictionaryClientGui {
     private void initializeUI() {
         JFrame frame = new JFrame("Best Dictionary");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
+        frame.setSize(700, 400);
 
         JPanel mainPanel = new JPanel(new BorderLayout(10, 0));
         frame.add(mainPanel);
@@ -66,7 +68,6 @@ public class DictionaryClientGui {
         JPanel card = new JPanel(new BorderLayout(10, 10));
         card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Panel for user input
         JPanel inputPanel = new JPanel(new BorderLayout(5, 0));
         inputPanel.setBorder(BorderFactory.createTitledBorder("Search for a Word"));
 
@@ -81,7 +82,6 @@ public class DictionaryClientGui {
 
         card.add(inputPanel, BorderLayout.NORTH);
 
-        // Text area for displaying the results
         JTextArea resultArea = new JTextArea();
         resultArea.setEditable(false);
         resultArea.setBorder(BorderFactory.createCompoundBorder(
@@ -90,7 +90,6 @@ public class DictionaryClientGui {
         JScrollPane scrollPane = new JScrollPane(resultArea);
         card.add(scrollPane, BorderLayout.CENTER);
 
-        // Button action to perform the search
         queryButton.addActionListener(e -> {
             String word = wordInput.getText().trim();
             if (!word.isEmpty()) {
@@ -109,12 +108,10 @@ public class DictionaryClientGui {
         addCard.setLayout(new BoxLayout(addCard, BoxLayout.Y_AXIS));
         addCard.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Word input panel with a titled border
         JPanel wordPanel = new JPanel();
         wordPanel.setLayout(new BoxLayout(wordPanel, BoxLayout.Y_AXIS));
         wordPanel.setBorder(BorderFactory.createTitledBorder("Word"));
 
-        // Input field for the word
         JTextField wordInput = new JTextField();
         wordInput.setAlignmentX(Component.CENTER_ALIGNMENT);
         wordInput.setMaximumSize(new Dimension(Integer.MAX_VALUE, wordInput.getPreferredSize().height));
@@ -123,16 +120,13 @@ public class DictionaryClientGui {
         addCard.add(wordPanel);
         addCard.add(Box.createVerticalStrut(10));
 
-        // Meanings panel with a titled border
         JPanel meaningsPanel = new JPanel(new BorderLayout());
         meaningsPanel.setBorder(BorderFactory.createTitledBorder("Meanings"));
 
-        // List panel for the meaning fields
         JPanel meaningsListPanel = new JPanel();
         meaningsListPanel.setLayout(new BoxLayout(meaningsListPanel, BoxLayout.Y_AXIS));
         meaningsPanel.add(new JScrollPane(meaningsListPanel), BorderLayout.CENTER);
 
-        // Bottom panel for the buttons
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton clearButton = new JButton("Clear");
         JButton addMeaningButton = new JButton("+ Add Meaning");
@@ -142,10 +136,8 @@ public class DictionaryClientGui {
         bottomPanel.add(submitButton);
         meaningsPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        // List to keep track of all meaning fields
         List<JTextField> meaningFields = new ArrayList<>();
 
-        // Add Meaning button logic
         addMeaningButton.addActionListener(e -> {
             JTextField newMeaningField = new JTextField();
             JButton removeMeaningButton = new JButton("-");
@@ -174,7 +166,6 @@ public class DictionaryClientGui {
 
         addCard.add(meaningsPanel);
 
-        // Status area with a scroll pane
         JTextArea statusArea = new JTextArea(4, 20);
         statusArea.setEditable(false);
         JScrollPane statusScrollPane = new JScrollPane(statusArea);
@@ -190,7 +181,6 @@ public class DictionaryClientGui {
             wordInput.setText("");
         });
 
-        // Submit button logic
         submitButton.addActionListener(e -> {
             String word = wordInput.getText().trim();
             logger.info("receive word: " + word);
@@ -213,8 +203,41 @@ public class DictionaryClientGui {
 
 
     private JPanel createRemoveCard() {
-        JPanel card = new JPanel(new BorderLayout());
-        // Add components specific to the Remove functionality
+        JPanel card = new JPanel(new BorderLayout(10, 10));
+        card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JPanel inputPanel = new JPanel(new BorderLayout(5, 0));
+        inputPanel.setBorder(BorderFactory.createTitledBorder("Delete A Word And Definitions"));
+
+        JTextField wordInput = new JTextField();
+        wordInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        Box inputBox = Box.createHorizontalBox();
+        inputBox.add(wordInput);
+        inputPanel.add(inputBox, BorderLayout.CENTER);
+
+        JButton queryButton = new JButton("Delete");
+        inputPanel.add(queryButton, BorderLayout.EAST);
+
+        card.add(inputPanel, BorderLayout.NORTH);
+
+        JTextArea resultArea = new JTextArea();
+        resultArea.setEditable(false);
+        resultArea.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder("Status Output"),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        JScrollPane scrollPane = new JScrollPane(resultArea);
+        card.add(scrollPane, BorderLayout.CENTER);
+
+        queryButton.addActionListener(e -> {
+            String word = wordInput.getText().trim();
+            if (!word.isEmpty()) {
+                String status = clientUtil.removeFromServer(word);
+//                SwingUtilities.invokeLater(() -> resultArea.setText("Results for \"" + word + "\":\n" + definition));
+            } else {
+                resultArea.setText("Please enter a word to query.");
+            }
+        });
+
         return card;
     }
 
