@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.List;
 
+import static Config.CommunicateConfig.END_OF_LINE;
 import static Config.CommunicateConfig.WORD_NOT_FOUND_FROM_SERVER;
 
 public class DictionaryClientGui {
@@ -85,7 +86,7 @@ public class DictionaryClientGui {
         JTextArea resultArea = new JTextArea();
         resultArea.setEditable(false);
         resultArea.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder("Results"),
+                BorderFactory.createTitledBorder("Outputs"),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         JScrollPane scrollPane = new JScrollPane(resultArea);
         card.add(scrollPane, BorderLayout.CENTER);
@@ -95,9 +96,13 @@ public class DictionaryClientGui {
             if (!word.isEmpty()) {
                 new Thread( ()->{
                     String definition = requestSendingHandler.queryServer(word);
-                    definition = Mapper.convertQueryResultToResultArea(definition);
-                    String finalDefinition = definition;
-                    SwingUtilities.invokeLater(() -> resultArea.setText("Results for \"" + word + "\":\n" + finalDefinition));
+                    if (definition.equals(WORD_NOT_FOUND_FROM_SERVER + END_OF_LINE)) {
+                        SwingUtilities.invokeLater(() -> resultArea.setText(WORD_NOT_FOUND_FROM_SERVER));
+                    } else {
+                        definition = Mapper.convertQueryResultToResultArea(definition);
+                        String finalDefinition = definition;
+                        SwingUtilities.invokeLater(() -> resultArea.setText(finalDefinition));
+                    }
                 }).start();
             } else {
                 resultArea.setText("Please enter a word to query.");
@@ -114,7 +119,7 @@ public class DictionaryClientGui {
 
         JPanel wordPanel = new JPanel();
         wordPanel.setLayout(new BoxLayout(wordPanel, BoxLayout.Y_AXIS));
-        wordPanel.setBorder(BorderFactory.createTitledBorder("Word"));
+        wordPanel.setBorder(BorderFactory.createTitledBorder("Word To Add"));
 
         JTextField wordInput = new JTextField();
         wordInput.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -231,7 +236,7 @@ public class DictionaryClientGui {
         JTextArea resultArea = new JTextArea();
         resultArea.setEditable(false);
         resultArea.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder("Status Output"),
+                BorderFactory.createTitledBorder("Output"),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         JScrollPane scrollPane = new JScrollPane(resultArea);
         card.add(scrollPane, BorderLayout.CENTER);
@@ -259,7 +264,7 @@ public class DictionaryClientGui {
         updateCard.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel wordPanel = new JPanel(new BorderLayout());
-        wordPanel.setBorder(BorderFactory.createTitledBorder("Word to Update"));
+        wordPanel.setBorder(BorderFactory.createTitledBorder("Word To Update"));
         wordPanel.setMaximumSize(new Dimension(600, 60));
 
         Box wordInputBox = Box.createHorizontalBox();
