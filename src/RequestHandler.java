@@ -67,6 +67,9 @@ public class RequestHandler implements Runnable {
         ArrayList<String> definitionList = Mapper.convertStringToArrayList(definitions, ",", true);
 
         if (dictionaryServer.isInDictionary(word)) {
+            if (!dictionaryServer.isDiffToExisting(word, definitionList)) {
+                return "New definition can not be same as the existing one" + END_OF_LINE;
+            }
             dictionaryServer.updateDefinition(word, definitionList);
             logger.info( "Successfully update word " + word);
             return "Successfully update word " + word +" and its definitions" + END_OF_LINE;

@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.logging.Logger;
@@ -112,5 +114,9 @@ public class DictionaryServer {
 
     public void updateDefinition(String word, ArrayList<String> definitions) {
         dictionary.put(word, definitions);
+    }
+
+    public boolean isDiffToExisting(String word, ArrayList<String> incoming ) {
+        return !new HashSet<>(incoming).equals(new HashSet<>(queryDictionary(word)));
     }
 }

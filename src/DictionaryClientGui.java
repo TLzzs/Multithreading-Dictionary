@@ -197,7 +197,9 @@ public class DictionaryClientGui {
             if (!word.isEmpty() && !meanings.isEmpty()) {
                 new Thread(() -> {
                     String response = requestSendingHandler.sendAddToServer(word, meanings);
-                    statusArea.setText(response);
+                    SwingUtilities.invokeLater(() -> {
+                        statusArea.setText(response);
+                    });
                 }).start();
             } else {
                 statusArea.setText("Please enter a word and at least one meaning before submitting.");
@@ -239,7 +241,9 @@ public class DictionaryClientGui {
             if (!word.isEmpty()) {
                 new Thread (()-> {
                     String status = requestSendingHandler.removeFromServer(word);
-                    resultArea.setText(status);
+                    SwingUtilities.invokeLater(() -> {
+                        resultArea.setText(status);
+                    });
                 }).start();
             } else {
                 resultArea.setText("Please enter a word to query.");
@@ -319,6 +323,10 @@ public class DictionaryClientGui {
                     submitButton.setVisible(true);
                     statusArea.setText("");
                 } else {
+                    meaningsListPanel.removeAll();
+                    meaningFields.clear();
+                    meaningsListPanel.revalidate();
+                    meaningsListPanel.repaint();
                     statusArea.setText("Word Not Found Please Try Another One");
                 }
             } else {
@@ -355,16 +363,14 @@ public class DictionaryClientGui {
             if ( !word.isEmpty() &&  !meanings.isEmpty()) {
                 new Thread (()-> {
                     String status = requestSendingHandler.updateDictionary(word, meanings);
-                    statusArea.setText(status);
+                    SwingUtilities.invokeLater(() -> {
+                        statusArea.setText(status);
+                    });
                 }).start();
             } else {
                 statusArea.setText("Please Enter A Word To Fetch Current Definition");
             }
-
-
         });
-
-
         return updateCard;
     }
 
