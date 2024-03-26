@@ -1,5 +1,3 @@
-package Client;
-
 import Mapper.Mapper;
 import Config.CommunicateConfig;
 
@@ -10,6 +8,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import static Config.CommunicateConfig.*;
+import static Mapper.Mapper.incomingMeaningToServer;
 
 public class RequestSendingHandler {
     private final BufferedReader reader;
@@ -44,14 +43,8 @@ public class RequestSendingHandler {
     public String sendAddToServer(String word, List<String> meanings) {
         try {
             logger.info("requesting add a new word into dictionary towards server ");
-            StringBuilder meaningStr = new StringBuilder();
 
-            for (String meaning : meanings) {
-                meaningStr.append(meaning).append(",");
-            }
-            meaningStr.replace(meaningStr.length()-1, meaningStr.length(),"");
-
-            writer.write(ADD + COLON + word.toLowerCase() + COLON + meaningStr);
+            writer.write(ADD + COLON + word.toLowerCase() + COLON + incomingMeaningToServer(meanings));
             writer.newLine();
             writer.flush();
 
@@ -89,7 +82,28 @@ public class RequestSendingHandler {
     }
 
     public List<String> fetchDefinitions(String word) {
-        logger.info("update query server: "+ queryServer(word));
-        return Mapper.convertStringToArrayList(queryServer(word), CommunicateConfig.END_OF_LINE);
+        logger.info("fetch definition from query server");
+        return Mapper.convertStringToArrayList(queryServer(word), END_OF_LINE);
+    }
+
+    public String updateDictionary(String word, List<String> meanings) {
+        try {
+            logger.info("updating the definition in server");
+
+            writer.write(UPDATE + COLON + word.toLowerCase() + COLON + incomingMeaningToServer(meanings));
+            writer.newLine();
+            writer.flush();
+
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null && !line.isEmpty() && !line.equals(FINISH_FROM_SERVER)) {
+                logger.info(line);
+                response.append(line).append(END_OF_LINE);
+            }
+            return response.toString();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

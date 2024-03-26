@@ -1,6 +1,7 @@
 package Mapper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static Config.CommunicateConfig.COLON;
 import static Config.CommunicateConfig.END_OF_LINE;
@@ -19,7 +20,7 @@ public class Mapper {
     }
 
     public static String convertQueryResultToResultArea (String fromServer) {
-        String[] items = fromServer.split("\n");
+        String[] items = fromServer.split(END_OF_LINE);
         StringBuilder queryResult = new StringBuilder();
         int count = 1;
         for (String item : items) {
@@ -32,5 +33,16 @@ public class Mapper {
 
         return queryResult.toString();
 
+    }
+
+    public static String incomingMeaningToServer(List<String> meanings) {
+        StringBuilder meaningStr = new StringBuilder();
+
+        for (String meaning : meanings) {
+            meaningStr.append(meaning).append(",");
+        }
+        meaningStr.replace(meaningStr.length()-1, meaningStr.length(),"");
+
+        return meaningStr.toString();
     }
 }

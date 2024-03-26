@@ -1,6 +1,4 @@
-package GUI;
-
-import Client.RequestSendingHandler;
+import GUI.ToggleButton;
 import Mapper.Mapper;
 
 import javax.swing.*;
@@ -9,7 +7,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DictionaryClientGui {
     private CardLayout cardLayout;
@@ -314,6 +311,7 @@ public class DictionaryClientGui {
                         addMeaningField(meaningsListPanel, meaningFields, def);
                     }
                     wordInput.setEditable(false);
+                    statusArea.setText("");
                 } else {
                     statusArea.setText("Word Not Found , Try Another One");
                 }
@@ -324,11 +322,11 @@ public class DictionaryClientGui {
         });
 
         clearButton.addActionListener(e -> {
-            wordInput.setEditable(true);  // Unlock the word input field
-            wordInput.setText("");  // Clear word input
-            meaningsListPanel.removeAll();  // Clear all meaning fields
+            wordInput.setEditable(true);
+            wordInput.setText("");
+            meaningsListPanel.removeAll();
             meaningFields.clear();
-            statusArea.setText("");  // Clear status area
+            statusArea.setText("");
             meaningsListPanel.revalidate();
             meaningsListPanel.repaint();
         });
@@ -336,7 +334,7 @@ public class DictionaryClientGui {
 
         // Add meaning button action
         addMeaningButton.addActionListener(e -> {
-            addMeaningField(meaningsListPanel, meaningFields, "");  // Add empty field for new meaning
+            addMeaningField(meaningsListPanel, meaningFields, "");
         });
 
         // Submit button action
@@ -346,10 +344,11 @@ public class DictionaryClientGui {
                     .map(JTextField::getText)
                     .filter(text -> !text.trim().isEmpty())
                     .toList();
+            new Thread (()-> {
+                String status = requestSendingHandler.updateDictionary(word, meanings);
+                statusArea.setText(status);
+            }).start();
 
-            logger.info("word received: "+ word);
-            logger.info("Def received: "+ meanings);
-            // TODO: Submit updated meanings to the server
         });
 
 

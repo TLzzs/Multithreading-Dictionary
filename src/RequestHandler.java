@@ -1,5 +1,3 @@
-package Server;
-
 import Mapper.Mapper;
 
 import java.io.*;
@@ -52,13 +50,29 @@ public class RequestHandler implements Runnable {
             case QUERY -> handleQuery(parts[1]);
             case ADD -> handleAdd(parts[1], parts[2]);
             case REMOVE -> handleRemove(parts[1]);
+            case UPDATE -> handleUpdate(parts[1], parts[2]);
             default -> "Unknown action." + END_OF_LINE;
         };
 
         writer.write(response);
-        writer.write("FINISH FROM SERVER");
+        writer.write(FINISH_FROM_SERVER);
         writer.newLine();
         writer.flush();
+    }
+
+    private String handleUpdate(String word, String definitions) {
+        logger.info("received word: "+ word);
+        logger.info("received definition: " + definitions);
+
+        ArrayList<String> definitionList = Mapper.convertStringToArrayList(definitions, ",");
+        if (dictionaryServer.isInDictionary(word)) {
+            dictionaryServer.updateDefinition(word, definitionList);
+            return "Successfully update word " + word +" and its definitions" + END_OF_LINE;
+
+        } else {
+            return "This word is not in dictionary , " +
+                    "might be deleted by someone else just now, please add it first" + END_OF_LINE;
+        }
     }
 
     private String handleRemove(String word) {
