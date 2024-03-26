@@ -373,7 +373,7 @@ public class DictionaryClientGui {
                     });
                 }).start();
             } else {
-                statusArea.setText("Please Enter A Word To Fetch Current Definition");
+                statusArea.setText("Word input or its meaning can not be empty");
             }
         });
         return updateCard;
