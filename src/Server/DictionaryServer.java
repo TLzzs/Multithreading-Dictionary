@@ -1,3 +1,5 @@
+package Server;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,7 +79,7 @@ public class DictionaryServer {
     public static void main(String[] args) throws IOException {
         Logger logger = Logger.getLogger(DictionaryServer.class.getName());
         if (args.length < 2) {
-            logger.severe("Usage: java DictionaryServer <port number> <dictionary input>");
+            logger.severe("Usage: java Server.DictionaryServer <port number> <dictionary input>");
             return;
         }
         int port;

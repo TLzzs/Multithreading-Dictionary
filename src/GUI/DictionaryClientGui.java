@@ -1,5 +1,6 @@
 package GUI;
 
+import Client.RequestSendingHandler;
 import Mapper.Mapper;
 
 import javax.swing.*;

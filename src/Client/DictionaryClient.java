@@ -1,4 +1,5 @@
-import GUI.RequestSendingHandler;
+package Client;
+
 import GUI.DictionaryClientGui;
 
 import javax.swing.*;
@@ -78,7 +79,7 @@ public class DictionaryClient {
     public static void main(String[] args) {
         Logger logger = Logger.getLogger(DictionaryClient.class.getName());
         if (args.length < 2) {
-            logger.severe("Usage: java DictionaryClient <server address> <port number>");
+            logger.severe("Usage: java Client.DictionaryClient <server address> <port number>");
             return;
         }
 
