@@ -9,6 +9,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DictionaryClientGui {
     private CardLayout cardLayout;
@@ -250,9 +251,6 @@ public class DictionaryClientGui {
     }
 
     private JPanel createUpdateCard() {
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         JPanel updateCard = new JPanel();
         updateCard.setLayout(new BoxLayout(updateCard, BoxLayout.Y_AXIS));
         updateCard.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -267,10 +265,17 @@ public class DictionaryClientGui {
         wordPanel.add(wordInputBox, BorderLayout.CENTER);
 
         JButton fetchDefinitionButton = new JButton("Fetch Definition");
-        wordPanel.add(fetchDefinitionButton, BorderLayout.EAST);
+        JButton clearButton = new JButton("Clear");  // Clear button next to Fetch Definition button
+
+        // Panel to hold both Fetch and Clear buttons
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        buttonPanel.add(fetchDefinitionButton);
+        buttonPanel.add(clearButton);
+        wordPanel.add(buttonPanel, BorderLayout.EAST);
 
         updateCard.add(wordPanel);
         updateCard.add(Box.createVerticalStrut(10));
+
 
         JPanel meaningsPanel = new JPanel(new BorderLayout());
         meaningsPanel.setBorder(BorderFactory.createTitledBorder("Edit Meanings"));
@@ -308,6 +313,7 @@ public class DictionaryClientGui {
                     for (String def : definitions) {
                         addMeaningField(meaningsListPanel, meaningFields, def);
                     }
+                    wordInput.setEditable(false);
                 } else {
                     statusArea.setText("Word Not Found , Try Another One");
                 }
@@ -317,6 +323,17 @@ public class DictionaryClientGui {
 
         });
 
+        clearButton.addActionListener(e -> {
+            wordInput.setEditable(true);  // Unlock the word input field
+            wordInput.setText("");  // Clear word input
+            meaningsListPanel.removeAll();  // Clear all meaning fields
+            meaningFields.clear();
+            statusArea.setText("");  // Clear status area
+            meaningsListPanel.revalidate();
+            meaningsListPanel.repaint();
+        });
+
+
         // Add meaning button action
         addMeaningButton.addActionListener(e -> {
             addMeaningField(meaningsListPanel, meaningFields, "");  // Add empty field for new meaning
@@ -325,10 +342,13 @@ public class DictionaryClientGui {
         // Submit button action
         submitButton.addActionListener(e -> {
             String word = wordInput.getText().trim();
-//            List<String> meanings = meaningFields.stream()
-//                    .map(JTextField::getText)
-//                    .filter(text -> !text.trim().isEmpty())
-//                    .collect(Collectors.toList());
+            List<String> meanings = meaningFields.stream()
+                    .map(JTextField::getText)
+                    .filter(text -> !text.trim().isEmpty())
+                    .toList();
+
+            logger.info("word received: "+ word);
+            logger.info("Def received: "+ meanings);
             // TODO: Submit updated meanings to the server
         });
 
