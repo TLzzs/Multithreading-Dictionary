@@ -24,9 +24,9 @@ public class Mapper {
         StringBuilder queryResult = new StringBuilder();
         int count = 1;
         for (String item : items) {
-            queryResult.append("Definition ")
-                    .append(count++)
+            queryResult.append(count++)
                     .append(COLON)
+                    .append(" ")
                     .append(item)
                     .append(END_OF_LINE);
         }

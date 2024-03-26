@@ -70,8 +70,7 @@ public class RequestHandler implements Runnable {
             return "Successfully update word " + word +" and its definitions" + END_OF_LINE;
 
         } else {
-            return "This word is not in dictionary , " +
-                    "might be deleted by someone else just now, please add it first" + END_OF_LINE;
+            return WORD_NOT_FOUND_FROM_SERVER + END_OF_LINE;
         }
     }
 
@@ -108,7 +107,7 @@ public class RequestHandler implements Runnable {
             }
             return response.toString();
         } else {
-            return "Word not found." + END_OF_LINE;
+            return WORD_NOT_FOUND_FROM_SERVER + END_OF_LINE;
         }
     }
 }

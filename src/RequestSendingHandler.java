@@ -51,8 +51,11 @@ public class RequestSendingHandler {
             StringBuilder response = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null && !line.isEmpty() && !line.equals(FINISH_FROM_SERVER)) {
-                logger.info(line);
-                response.append(line).append(END_OF_LINE);
+                if (line.equals(WORD_NOT_FOUND_FROM_SERVER)) {
+                    response.append("NOT FOUND IN DICTIONARY, PLEASE TRY ANOTHER ONE").append(END_OF_LINE);
+                } else {
+                    response.append(line).append(END_OF_LINE);
+                }
             }
             return response.toString();
         } catch (IOException e) {
@@ -97,8 +100,17 @@ public class RequestSendingHandler {
             StringBuilder response = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null && !line.isEmpty() && !line.equals(FINISH_FROM_SERVER)) {
-                logger.info(line);
-                response.append(line).append(END_OF_LINE);
+                if (line.equals(WORD_NOT_FOUND_FROM_SERVER)) {
+                    response.append("This word is not in dictionary")
+                            .append(END_OF_LINE)
+                            .append("Tips: ")
+                            .append("might be deleted by someone else just now, please add it first")
+                            .append(END_OF_LINE);
+
+                } else {
+                    response.append(line).append(END_OF_LINE);
+                }
+
             }
             return response.toString();
 

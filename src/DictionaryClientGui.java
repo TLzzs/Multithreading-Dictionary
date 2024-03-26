@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.List;
 
+import static Config.CommunicateConfig.WORD_NOT_FOUND_FROM_SERVER;
+
 public class DictionaryClientGui {
     private CardLayout cardLayout;
     private JPanel cardPanel;
@@ -306,14 +308,14 @@ public class DictionaryClientGui {
             meaningFields.clear();
             if (!word.trim().isEmpty()) {
                 List<String> definitions = requestSendingHandler.fetchDefinitions(word);
-                if (!definitions.get(0).equals("Word not found.")) {
+                if (!definitions.get(0).equals(WORD_NOT_FOUND_FROM_SERVER)) {
                     for (String def : definitions) {
                         addMeaningField(meaningsListPanel, meaningFields, def);
                     }
                     wordInput.setEditable(false);
                     statusArea.setText("");
                 } else {
-                    statusArea.setText("Word Not Found , Try Another One");
+                    statusArea.setText("Word Not Found Please Try Another One");
                 }
             } else {
                 statusArea.setText("Input is empty, please give an input");

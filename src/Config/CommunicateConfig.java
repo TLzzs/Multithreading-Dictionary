@@ -8,4 +8,5 @@ public class CommunicateConfig {
     public static final String COLON = ":";
     public static final String FINISH_FROM_SERVER = "FINISH FROM SERVER";
     public static final String END_OF_LINE = "\n";
+    public static final String WORD_NOT_FOUND_FROM_SERVER = "Word Not Found";
 }
