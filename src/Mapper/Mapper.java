@@ -1,19 +1,28 @@
 package Mapper;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import static Config.CommunicateConfig.COLON;
 import static Config.CommunicateConfig.END_OF_LINE;
 
 public class Mapper {
-    public static ArrayList<String> convertStringToArrayList(String input, String symbol) {
+    public static ArrayList<String> convertStringToArrayList(String input, String symbol, Boolean needDecode) {
         // Split the input string by commas
         String[] items = input.split(symbol);
 
         ArrayList<String> list = new ArrayList<>();
         for (String item : items) {
-            list.add(item.trim());
+            if (needDecode) {
+                byte[] decodedBytes = Base64.getDecoder().decode(item);
+                String decodedMeaning = new String(decodedBytes, StandardCharsets.UTF_8);
+                list.add(decodedMeaning);
+            } else {
+                list.add(item.trim());
+            }
+
         }
 
         return list;
@@ -39,7 +48,8 @@ public class Mapper {
         StringBuilder meaningStr = new StringBuilder();
 
         for (String meaning : meanings) {
-            meaningStr.append(meaning).append(",");
+            String encoded = Base64.getEncoder().encodeToString(meaning.getBytes(StandardCharsets.UTF_8));
+            meaningStr.append(encoded).append(",");
         }
         meaningStr.replace(meaningStr.length()-1, meaningStr.length(),"");
 

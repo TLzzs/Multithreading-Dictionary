@@ -38,7 +38,7 @@ public class DictionaryServer {
                     logger.info("Accepted connection from " + clientSocket.getRemoteSocketAddress());
                     executorService.submit(new RequestHandler(clientSocket, this));
                 } catch (IOException e) {
-                    System.err.println("Exception accepting connection: " + e.getMessage());
+                    logger.severe("Exception accepting connection: " + e.getMessage());
                     e.printStackTrace();
                 }
             }

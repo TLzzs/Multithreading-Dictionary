@@ -56,11 +56,11 @@ public class DictionaryClient {
         int attempt = 0;
         while (!Thread.currentThread().isInterrupted()) {
             try {
-                System.out.println("Attempting to reconnect to the server...");
+                logger.info("Attempting to reconnect to the server...");
                 Thread.sleep(Math.min(1000 * (1L << attempt), 30000));
                 attempt++;
                 socket = new Socket(serverAddress, port);
-                System.out.println("Reconnected to the server.");
+                logger.info("Reconnected to the server.");
                 break;
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();

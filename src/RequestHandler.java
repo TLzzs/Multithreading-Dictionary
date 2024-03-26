@@ -64,7 +64,8 @@ public class RequestHandler implements Runnable {
         logger.info("received word: "+ word);
         logger.info("received definition: " + definitions);
 
-        ArrayList<String> definitionList = Mapper.convertStringToArrayList(definitions, ",");
+        ArrayList<String> definitionList = Mapper.convertStringToArrayList(definitions, ",", true);
+
         if (dictionaryServer.isInDictionary(word)) {
             dictionaryServer.updateDefinition(word, definitionList);
             logger.info( "Successfully update word " + word);
@@ -88,7 +89,7 @@ public class RequestHandler implements Runnable {
     private String handleAdd(String word, String definitions) {
         logger.info("received word: "+ word);
         logger.info("received definition: " + definitions);
-        ArrayList<String> definitionList = Mapper.convertStringToArrayList(definitions, ",");
+        ArrayList<String> definitionList = Mapper.convertStringToArrayList(definitions, ",", true);
         if (!dictionaryServer.isInDictionary(word)) {
             dictionaryServer.addWordAndDefinition(word, definitionList);
             return "Successfully Added to Dictionary..." + END_OF_LINE;

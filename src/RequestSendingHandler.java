@@ -86,7 +86,7 @@ public class RequestSendingHandler {
 
     public List<String> fetchDefinitions(String word) {
         logger.info("fetch definition from query server");
-        return Mapper.convertStringToArrayList(queryServer(word), END_OF_LINE);
+        return Mapper.convertStringToArrayList(queryServer(word), END_OF_LINE, false);
     }
 
     public String updateDictionary(String word, List<String> meanings) {
