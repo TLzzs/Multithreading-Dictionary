@@ -285,7 +285,9 @@ public class DictionaryClientGui {
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton addMeaningButton = new JButton("+ Add Meaning");
+        addMeaningButton.setVisible(false);
         JButton submitButton = new JButton("Submit");
+        submitButton.setVisible(false);
         bottomPanel.add(addMeaningButton);
         bottomPanel.add(submitButton);
 
@@ -313,6 +315,8 @@ public class DictionaryClientGui {
                         addMeaningField(meaningsListPanel, meaningFields, def);
                     }
                     wordInput.setEditable(false);
+                    addMeaningButton.setVisible(true);
+                    submitButton.setVisible(true);
                     statusArea.setText("");
                 } else {
                     statusArea.setText("Word Not Found Please Try Another One");
@@ -325,6 +329,8 @@ public class DictionaryClientGui {
 
         clearButton.addActionListener(e -> {
             wordInput.setEditable(true);
+            addMeaningButton.setVisible(false);
+            submitButton.setVisible(false);
             wordInput.setText("");
             meaningsListPanel.removeAll();
             meaningFields.clear();
@@ -346,10 +352,15 @@ public class DictionaryClientGui {
                     .map(JTextField::getText)
                     .filter(text -> !text.trim().isEmpty())
                     .toList();
-            new Thread (()-> {
-                String status = requestSendingHandler.updateDictionary(word, meanings);
-                statusArea.setText(status);
-            }).start();
+            if ( !word.isEmpty() &&  !meanings.isEmpty()) {
+                new Thread (()-> {
+                    String status = requestSendingHandler.updateDictionary(word, meanings);
+                    statusArea.setText(status);
+                }).start();
+            } else {
+                statusArea.setText("Please Enter A Word To Fetch Current Definition");
+            }
+
 
         });
 

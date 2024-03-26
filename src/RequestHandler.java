@@ -67,6 +67,7 @@ public class RequestHandler implements Runnable {
         ArrayList<String> definitionList = Mapper.convertStringToArrayList(definitions, ",");
         if (dictionaryServer.isInDictionary(word)) {
             dictionaryServer.updateDefinition(word, definitionList);
+            logger.info( "Successfully update word " + word);
             return "Successfully update word " + word +" and its definitions" + END_OF_LINE;
 
         } else {
@@ -105,6 +106,7 @@ public class RequestHandler implements Runnable {
             for (String definition : definitions) {
                 response.append(definition).append(END_OF_LINE);
             }
+            logger.info("server found: "+ word);
             return response.toString();
         } else {
             return WORD_NOT_FOUND_FROM_SERVER + END_OF_LINE;
