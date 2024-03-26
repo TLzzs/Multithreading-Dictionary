@@ -1,4 +1,4 @@
-package Util;
+package Config;
 
 public class CommunicateConfig {
     public static final String ADD = "ADD";

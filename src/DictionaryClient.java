@@ -1,4 +1,4 @@
-import Util.ClientUtil;
+import GUI.RequestSendingHandler;
 import GUI.DictionaryClientGui;
 
 import javax.swing.*;
@@ -30,7 +30,7 @@ public class DictionaryClient {
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
                 logger.info("Creating Client GUI...");
-                new DictionaryClientGui(logger, new ClientUtil(reader, writer));
+                new DictionaryClientGui(logger, new RequestSendingHandler(reader, writer));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

@@ -1,14 +1,11 @@
 package GUI;
 
 import Mapper.Mapper;
-import Util.ClientUtil;
-import Util.CommunicateConfig;
 
 import javax.swing.*;
 import java.awt.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.List;
 
@@ -17,11 +14,11 @@ public class DictionaryClientGui {
     private JPanel cardPanel;
 
     private final Logger logger;
-    private final ClientUtil clientUtil;
+    private final RequestSendingHandler requestSendingHandler;
 
-    public DictionaryClientGui(Logger logger, ClientUtil clientUtil) {
+    public DictionaryClientGui(Logger logger, RequestSendingHandler requestSendingHandler) {
         this.logger = logger;
-        this.clientUtil = clientUtil;
+        this.requestSendingHandler = requestSendingHandler;
         initializeUI();
     }
 
@@ -96,7 +93,7 @@ public class DictionaryClientGui {
             String word = wordInput.getText().trim();
             if (!word.isEmpty()) {
                 new Thread( ()->{
-                    String definition = clientUtil.queryServer(word);
+                    String definition = requestSendingHandler.queryServer(word);
                     definition = Mapper.convertQueryResultToResultArea(definition);
                     String finalDefinition = definition;
                     SwingUtilities.invokeLater(() -> resultArea.setText("Results for \"" + word + "\":\n" + finalDefinition));
@@ -198,7 +195,7 @@ public class DictionaryClientGui {
 
             if (!word.isEmpty() && !meanings.isEmpty()) {
                 new Thread(() -> {
-                    String response = clientUtil.sendAddToServer(word, meanings);
+                    String response = requestSendingHandler.sendAddToServer(word, meanings);
                     statusArea.setText(response);
                 }).start();
             } else {
@@ -240,7 +237,7 @@ public class DictionaryClientGui {
             String word = wordInput.getText().trim();
             if (!word.isEmpty()) {
                 new Thread (()-> {
-                    String status = clientUtil.removeFromServer(word);
+                    String status = requestSendingHandler.removeFromServer(word);
                     resultArea.setText(status);
                 }).start();
             } else {
@@ -305,7 +302,7 @@ public class DictionaryClientGui {
             meaningsListPanel.removeAll();
             meaningFields.clear();
             if (!word.trim().isEmpty()) {
-                List<String> definitions = clientUtil.fetchDefinitions(word);
+                List<String> definitions = requestSendingHandler.fetchDefinitions(word);
                 if (!definitions.get(0).equals("Word not found.")) {
                     for (String def : definitions) {
                         addMeaningField(meaningsListPanel, meaningFields, def);

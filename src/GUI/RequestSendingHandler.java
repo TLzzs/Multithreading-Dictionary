@@ -1,6 +1,7 @@
-package Util;
+package GUI;
 
 import Mapper.Mapper;
+import Config.CommunicateConfig;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -8,15 +9,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static Util.CommunicateConfig.*;
+import static Config.CommunicateConfig.*;
 
-public class ClientUtil {
+public class RequestSendingHandler {
     private final BufferedReader reader;
     private final BufferedWriter writer;
 
-    private final Logger logger = Logger.getLogger(ClientUtil.class.getName());
+    private final Logger logger = Logger.getLogger(RequestSendingHandler.class.getName());
 
-    public ClientUtil(BufferedReader reader, BufferedWriter writer) {
+    public RequestSendingHandler(BufferedReader reader, BufferedWriter writer) {
         this.reader = reader;
         this.writer = writer;
     }

@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import static Util.CommunicateConfig.*;
+import static Config.CommunicateConfig.*;
 
 public class RequestHandler implements Runnable {
     private final Socket clientSocket;

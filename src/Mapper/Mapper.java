@@ -2,8 +2,8 @@ package Mapper;
 
 import java.util.ArrayList;
 
-import static Util.CommunicateConfig.COLON;
-import static Util.CommunicateConfig.END_OF_LINE;
+import static Config.CommunicateConfig.COLON;
+import static Config.CommunicateConfig.END_OF_LINE;
 
 public class Mapper {
     public static ArrayList<String> convertStringToArrayList(String input, String symbol) {
