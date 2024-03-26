@@ -1,6 +1,8 @@
 package GUI;
 
+import Mapper.Mapper;
 import Util.ClientUtil;
+import Util.CommunicateConfig;
 
 import javax.swing.*;
 import java.awt.*;
@@ -95,7 +97,9 @@ public class DictionaryClientGui {
             if (!word.isEmpty()) {
                 new Thread( ()->{
                     String definition = clientUtil.queryServer(word);
-                    SwingUtilities.invokeLater(() -> resultArea.setText("Results for \"" + word + "\":\n" + definition));
+                    definition = Mapper.convertQueryResultToResultArea(definition);
+                    String finalDefinition = definition;
+                    SwingUtilities.invokeLater(() -> resultArea.setText("Results for \"" + word + "\":\n" + finalDefinition));
                 }).start();
             } else {
                 resultArea.setText("Please enter a word to query.");
@@ -298,15 +302,21 @@ public class DictionaryClientGui {
 
         fetchDefinitionButton.addActionListener(e -> {
             String word = wordInput.getText().trim();
-            // TODO: Fetch the current definition(s) for the word
-            // Simulate fetching and populating the meanings
             meaningsListPanel.removeAll();
             meaningFields.clear();
-            // Example: Assuming fetchDefinitions returns a List<String>
-            List<String> definitions = fetchDefinitions(word);
-            for (String def : definitions) {
-                addMeaningField(meaningsListPanel, meaningFields, def);
+            if (!word.trim().isEmpty()) {
+                List<String> definitions = clientUtil.fetchDefinitions(word);
+                if (!definitions.get(0).equals("Word not found.")) {
+                    for (String def : definitions) {
+                        addMeaningField(meaningsListPanel, meaningFields, def);
+                    }
+                } else {
+                    statusArea.setText("Word Not Found , Try Another One");
+                }
+            } else {
+                statusArea.setText("Input is empty, please give an input");
             }
+
         });
 
         // Add meaning button action
@@ -355,11 +365,7 @@ public class DictionaryClientGui {
 
     }
 
-    private List<String> fetchDefinitions(String word) {
-        // TODO: Implement fetching logic from server or data source
-        // This is just a placeholder
-        return Arrays.asList("Definition 1", "Definition 2");
-    }
+
 
 
     private JPanel createWelcomeCard() {

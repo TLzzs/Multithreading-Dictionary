@@ -1,5 +1,7 @@
 package Util;
 
+import Mapper.Mapper;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -83,5 +85,10 @@ public class ClientUtil {
             logger.severe("Error communicating with the server: " + e.getMessage());
             return "An Unexpected Error Occurs , please restart the application";
         }
+    }
+
+    public List<String> fetchDefinitions(String word) {
+        logger.info("update query server: "+ queryServer(word));
+        return Mapper.convertStringToArrayList(queryServer(word), CommunicateConfig.END_OF_LINE);
     }
 }

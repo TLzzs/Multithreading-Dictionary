@@ -72,7 +72,7 @@ public class RequestHandler implements Runnable {
     private String handleAdd(String word, String definitions) {
         logger.info("received word: "+ word);
         logger.info("received definition: " + definitions);
-        ArrayList<String> definitionList = Mapper.convertStringToArrayList(definitions);
+        ArrayList<String> definitionList = Mapper.convertStringToArrayList(definitions, ",");
         if (!dictionaryServer.isInDictionary(word)) {
             dictionaryServer.addWordAndDefinition(word, definitionList);
             return "Successfully Added to Dictionary..." + END_OF_LINE;
@@ -87,11 +87,8 @@ public class RequestHandler implements Runnable {
 
         if (definitions != null) {
             StringBuilder response = new StringBuilder();
-            for (int i = 0; i < definitions.size(); i++) {
-                response.append("Definition ")
-                        .append(i + 1)
-                        .append(": ")
-                        .append(definitions.get(i)).append(END_OF_LINE);
+            for (String definition : definitions) {
+                response.append(definition).append(END_OF_LINE);
             }
             return response.toString();
         } else {
