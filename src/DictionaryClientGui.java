@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.List;
 
-import static Config.CommunicateConfig.END_OF_LINE;
-import static Config.CommunicateConfig.WORD_NOT_FOUND_FROM_SERVER;
+import static Config.CommunicateConfig.*;
 
 public class DictionaryClientGui {
     private CardLayout cardLayout;
@@ -319,7 +318,9 @@ public class DictionaryClientGui {
             meaningFields.clear();
             if (!word.trim().isEmpty()) {
                 List<String> definitions = requestSendingHandler.fetchDefinitions(word);
-                if (!definitions.get(0).equals(WORD_NOT_FOUND_FROM_SERVER)) {
+                if (definitions.get(0).equals(ERROR_COMMUNICATE)) {
+                    statusArea.setText(ERROR_COMMUNICATE);
+                } else if (!definitions.get(0).equals(WORD_NOT_FOUND_FROM_SERVER)) {
                     for (String def : definitions) {
                         addMeaningField(meaningsListPanel, meaningFields, def);
                     }

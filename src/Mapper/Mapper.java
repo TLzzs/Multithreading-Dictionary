@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-import static Config.CommunicateConfig.COLON;
-import static Config.CommunicateConfig.END_OF_LINE;
+import static Config.CommunicateConfig.*;
 
 public class Mapper {
     public static ArrayList<String> convertStringToArrayList(String input, String symbol, Boolean needDecode) {
@@ -30,6 +29,9 @@ public class Mapper {
 
     public static String convertQueryResultToResultArea (String fromServer) {
         String[] items = fromServer.split(END_OF_LINE);
+        if (items.length == 1 && items[0].equals(ERROR_COMMUNICATE)){
+            return ERROR_COMMUNICATE;
+        }
         StringBuilder queryResult = new StringBuilder();
         int count = 1;
         for (String item : items) {

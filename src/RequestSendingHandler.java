@@ -36,7 +36,7 @@ public class RequestSendingHandler {
             return response.toString();
         } catch (IOException e) {
             logger.severe("Error communicating with the server: " + e.getMessage());
-            return "Error querying the server.";
+            return ERROR_COMMUNICATE;
         }
     }
 
@@ -60,7 +60,7 @@ public class RequestSendingHandler {
             return response.toString();
         } catch (IOException e) {
             logger.severe("Error communicating with the server: " + e.getMessage());
-            return "An Unexpected Error Occurs , please restart the application";
+            return ERROR_COMMUNICATE;
         }
     }
 
@@ -80,7 +80,7 @@ public class RequestSendingHandler {
             return response.toString();
         } catch (IOException e) {
             logger.severe("Error communicating with the server: " + e.getMessage());
-            return "An Unexpected Error Occurs , please restart the application";
+            return ERROR_COMMUNICATE;
         }
     }
 
@@ -115,7 +115,7 @@ public class RequestSendingHandler {
             return response.toString();
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return ERROR_COMMUNICATE;
         }
     }
 }
