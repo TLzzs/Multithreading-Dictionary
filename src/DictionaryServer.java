@@ -4,10 +4,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Logger;
 
@@ -18,11 +15,19 @@ public class DictionaryServer {
     private final Logger logger;
 
     private final Map<String, ArrayList<String>> dictionary = new ConcurrentHashMap<>();
+    private final Map<String, ArrayList<String>> cache;
     public DictionaryServer(int port, String dictionaryFile, Logger logger) throws IOException {
         this.port = port;
         this.dictionaryFile = dictionaryFile;
         this.logger = logger;
-        
+
+        this.cache = Collections.synchronizedMap(new LinkedHashMap<String, ArrayList<String>>() {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<String, ArrayList<String>> eldest) {
+                return size() > 3;
+            }
+        });
+
         loadDictionary();
         startServer();
     }
@@ -97,7 +102,21 @@ public class DictionaryServer {
 
 
     public ArrayList<String> queryDictionary(String word) {
-        return dictionary.get(word.toLowerCase());
+        synchronized(cache) {
+            if (cache.containsKey(word)) {
+                logger.info("query from cache");
+                return new ArrayList<>(cache.get(word.toLowerCase()));
+            }
+        }
+
+        logger.info("query from actual dictionary");
+        ArrayList<String> meanings = dictionary.get(word.toLowerCase());
+        if (meanings!= null && !meanings.isEmpty()) {
+            synchronized(cache) {
+                cache.put(word, new ArrayList<>(meanings));
+            }
+        }
+        return meanings;
     }
 
     public boolean isInDictionary (String word) {
@@ -106,14 +125,23 @@ public class DictionaryServer {
 
     public void addWordAndDefinition(String word , ArrayList<String> definitions) {
         dictionary.put(word, definitions);
+        synchronized(cache) {
+            cache.put(word, new ArrayList<>(definitions));
+        }
     }
 
     public void removeWordAndDefinition(String word) {
         dictionary.remove(word);
+        synchronized(cache) {
+            cache.remove(word);
+        }
     }
 
     public void updateDefinition(String word, ArrayList<String> definitions) {
         dictionary.put(word, definitions);
+        synchronized(cache) {
+            cache.put(word, new ArrayList<>(definitions));
+        }
     }
 
     public boolean isDiffToExisting(String word, ArrayList<String> incoming ) {
