@@ -1,3 +1,5 @@
+package Client;
+
 import Mapper.Mapper;
 import Config.CommunicateConfig;
 

@@ -1,3 +1,6 @@
+package GUI;
+
+import Client.RequestSendingHandler;
 import GUI.ToggleButton;
 import Mapper.Mapper;
 
